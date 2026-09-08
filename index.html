@@ -36,12 +36,10 @@
     countDiv.innerText = currentNum + 1;
 
     try {
-      // Send the request with no-cors mode to bypass Google Apps Script CORS block
       await fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors"
       });
-      // Fetch actual updated count after a short delay
       setTimeout(getCount, 1500);
     } catch (err) {
       console.error("Error updating count:", err);

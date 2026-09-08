@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Stupidity Counter</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    #count { font-size: 80px; font-weight: bold; margin: 20px 0; }
+    button { font-size: 24px; padding: 15px 30px; cursor: pointer; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Counter</h1>
+  <div id="count">Loading...</div>
+  <button onclick="increment()">Increment Counter</button>
+
+  <script>
+    const SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE";
+
+    async function getCount() {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.text();
+      document.getElementById("count").innerText = data;
+    }
+
+    async function increment() {
+      await fetch(SCRIPT_URL, { method: "POST" });
+      getCount();
+    }
+
+    // Refresh automatically every 3 seconds
+    setInterval(getCount, 3000);
+    getCount();
+  </script>
+</body>
+</html>

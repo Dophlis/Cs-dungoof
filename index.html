@@ -14,22 +14,43 @@
   <div id="count">Loading...</div>
   <button onclick="increment()">Add a donegoof</button>
 
-  <script>
-    const SCRIPT_URL = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQYHundetX7WeRpRnyKa9BQoT067xxNjrH9K1Jwg_S9OsDZFByIFb6R2TAjpoQCQs_LGQOq0hkERpVPrbhFDJMlN4DTQwa-eZrcO-IDuXgB5CoQ5qZ1MpzEqaPZUIQom-oMecm8xZ4M2CmLQFdyiEKcceJRW429T7ICOzfNoXWFEnj_pNBnV3rg3v9DRuYzfvfaGPkUJS5YFEB9hJmhAe4c7AFg6poh-HvuhktL0po4nipsPtUG-UnTmNEsWBveiJkf2Ik3iTxkGcb0HkQ&lib=MWR9Or_0Unezr9uX2i6E6_bYs4wonrQEQ";
+<script>
+  const SCRIPT_URL = "YOUR_WEB_APP_URL_HERE";
 
-    async function getCount() {
+  async function getCount() {
+    try {
       const res = await fetch(SCRIPT_URL);
       const data = await res.text();
-      document.getElementById("count").innerText = data;
+      if (data) {
+        document.getElementById("count").innerText = data;
+      }
+    } catch (err) {
+      console.error("Error fetching count:", err);
     }
+  }
 
-    async function increment() {
-      await fetch(SCRIPT_URL, { method: "POST" });
-      getCount();
+  async function increment() {
+    // Optimistic UI update: increase number immediately on screen
+    const countDiv = document.getElementById("count");
+    const currentNum = parseInt(countDiv.innerText) || 0;
+    countDiv.innerText = currentNum + 1;
+
+    try {
+      // Send the request with no-cors mode to bypass Google Apps Script CORS block
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors"
+      });
+      // Fetch actual updated count after a short delay
+      setTimeout(getCount, 1500);
+    } catch (err) {
+      console.error("Error updating count:", err);
     }
+  }
 
-    setInterval(getCount, 3000);
-    getCount();
-  </script>
+  setInterval(getCount, 5000);
+  getCount();
+</script>
+
 </body>
 </html>
